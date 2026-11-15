@@ -1,0 +1,1711 @@
+/* ==========================================================================
+   QueueLess — Student Queue Management System
+   index.html: foundation of the front-end prototype for the QueueLess web application
+   ========================================================================== */
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="QueueLess — Student Queue Management System for university service offices." />
+    <title>QueueLess — Student Queue Management System</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <!-- ================================================================
+         SCREEN 1: LOGIN
+         Shown by default. All other screens are hidden.
+    ================================================================ -->
+    <div id="screen-login" class="screen screen--active" role="main" aria-label="Login screen">
+
+    
+      <div class="login-wrapper">
+
+        <div class="login-brand">
+          <div class="login-logo" aria-hidden="true">QL</div>
+          <h1 class="login-title">QueueLess</h1>
+          <p class="login-subtitle">Student Queue Management System</p>
+          <p class="login-description">
+            Skip the line. Request your queue ticket online and
+            get notified when it is your turn.
+          </p>
+        </div>
+
+        <div class="login-card">
+          <h2 class="login-card-heading">Sign in to your account</h2>
+
+          <div
+            id="login-error"
+            class="login-error"
+            role="alert"
+            aria-live="polite"
+            aria-atomic="true"
+            hidden
+          >
+            Invalid credentials. Please try again.
+          </div>
+
+          <form id="login-form" class="login-form" novalidate>
+
+            <div class="form-group">
+              <label for="login-username">Student ID or Username</label>
+              <input
+                type="text"
+                id="login-username"
+                name="username"
+                placeholder="e.g., 2024-00001 or staff01"
+                autocomplete="username"
+                required
+                aria-describedby="login-username-hint"
+              />
+              <span id="login-username-hint" class="form-hint">
+                Students: use your university student ID.
+                Staff and admins: use your assigned username.
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <div class="input-with-toggle">
+                <input
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  id="toggle-password"
+                  class="btn-toggle-password"
+                  aria-label="Show password"
+                  aria-controls="login-password"
+                >
+                  Show
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group form-group--checkbox">
+              <input
+                type="checkbox"
+                id="remember-me"
+                name="rememberMe"
+              />
+              <label for="remember-me">Remember me on this device</label>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" id="btn-login" class="btn-primary btn--full-width">
+                Sign In
+              </button>
+            </div>
+
+          </form>
+
+          <div class="login-demo-hint" aria-label="Demo credentials for prototype testing">
+            <p class="demo-hint-title">Prototype demo accounts:</p>
+            <ul class="demo-accounts">
+              <li>
+                <strong>Student:</strong>
+                ID <code>2024-00001</code> / password <code>student</code>
+              </li>
+              <li>
+                <strong>Staff:</strong>
+                username <code>staff01</code> / password <code>staff</code>
+              </li>
+              <li>
+                <strong>Admin:</strong>
+                username <code>admin01</code> / password <code>admin</code>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <footer class="login-footer">
+          <p>QueueLess &mdash; Front-end prototype &mdash; Academic project</p>
+        </footer>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================================
+         SCREEN 2: STUDENT DASHBOARD
+         Hidden on load. Shown by JavaScript after student login.
+    ================================================================ -->
+    <div id="screen-student" class="screen screen--hidden" aria-label="Student dashboard">
+
+      <!-- Sidebar -->
+      <aside id="sidebar-student" class="sidebar" aria-label="Student navigation">
+
+        <div class="sidebar-brand">
+          <div class="sidebar-logo" aria-hidden="true">QL</div>
+          <span class="sidebar-brand-name">QueueLess</span>
+        </div>
+
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" aria-hidden="true">S</div>
+          <div class="sidebar-user-info">
+            <span id="student-display-name" class="sidebar-user-name">Student Name</span>
+            <span class="sidebar-user-role">Student</span>
+          </div>
+        </div>
+
+        <nav aria-label="Student dashboard navigation">
+          <ul class="sidebar-nav">
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn sidebar-nav-btn--active"
+                data-target="section-student-home"
+                data-screen="student"
+                aria-current="page"
+              >
+                <span class="nav-icon" aria-hidden="true">&#9Dashboard;</span>
+                Dashboard
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-student-join-queue"
+                data-screen="student"
+              >
+                Join a Queue
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-student-active-ticket"
+                data-screen="student"
+              >
+                My Active Ticket
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-student-history"
+                data-screen="student"
+              >
+                Queue History
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-student-notifications"
+                data-screen="student"
+              >
+                Notifications
+                <span class="nav-badge" id="student-notif-badge" aria-label="3 unread notifications">3</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-student-profile"
+                data-screen="student"
+              >
+                My Profile
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button type="button" class="btn-logout" id="btn-logout-student">
+            Sign Out
+          </button>
+        </div>
+
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="dashboard-body">
+
+        <header class="dashboard-header" id="student-dashboard-header">
+          <div class="dashboard-header-left">
+            <button
+              type="button"
+              id="btn-toggle-sidebar-student"
+              class="btn-sidebar-toggle"
+              aria-label="Toggle sidebar navigation"
+              aria-controls="sidebar-student"
+            >
+              &#9776;
+            </button>
+            <h2 class="dashboard-section-title" id="student-section-title">Dashboard</h2>
+          </div>
+          <div class="dashboard-header-right">
+            <span class="header-student-id" id="header-student-id">ID: 2024-00001</span>
+          </div>
+        </header>
+
+        <main id="student-main" class="dashboard-main">
+
+          <!-- A. STUDENT HOME / DASHBOARD -->
+          <section
+            id="section-student-home"
+            class="dashboard-section section--active"
+            aria-labelledby="student-home-heading"
+          >
+            <div class="section-header">
+              <h3 id="student-home-heading">
+                Welcome back, <span id="student-welcome-name">Student</span>!
+              </h3>
+              <p class="section-subtitle">Here is an overview of your queue activity.</p>
+            </div>
+
+            <div class="overview-cards" role="list">
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Available Offices</div>
+                <div class="overview-card-value" id="student-stat-offices">4</div>
+                <div class="overview-card-sub">offices open today</div>
+              </article>
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Active Tickets</div>
+                <div class="overview-card-value" id="student-stat-active">0</div>
+                <div class="overview-card-sub">currently in queue</div>
+              </article>
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Completed</div>
+                <div class="overview-card-value" id="student-stat-completed">3</div>
+                <div class="overview-card-sub">total transactions</div>
+              </article>
+            </div>
+
+            <div class="dashboard-quick-actions">
+              <h4>Quick Actions</h4>
+              <div class="quick-action-buttons">
+                <button
+                  type="button"
+                  class="btn-primary"
+                  data-target="section-student-join-queue"
+                  data-screen="student"
+                  id="btn-quick-join"
+                >
+                  Join a Queue
+                </button>
+                <button
+                  type="button"
+                  class="btn-secondary"
+                  data-target="section-student-active-ticket"
+                  data-screen="student"
+                  id="btn-quick-ticket"
+                >
+                  View Active Ticket
+                </button>
+              </div>
+            </div>
+
+            <div class="dashboard-active-summary" id="student-home-ticket-summary">
+              <h4>Current Active Ticket</h4>
+              <div id="student-home-no-ticket" class="empty-state">
+                <p>You have no active ticket at the moment.</p>
+                <button
+                  type="button"
+                  class="btn-primary"
+                  data-target="section-student-join-queue"
+                  data-screen="student"
+                >
+                  Join a Queue
+                </button>
+              </div>
+              <div id="student-home-ticket-card" class="mini-ticket-card" hidden>
+                <div class="mini-ticket-number" id="home-ticket-number">R-001</div>
+                <div class="mini-ticket-office" id="home-ticket-office">Registrar's Office</div>
+                <div class="mini-ticket-status">
+                  <span class="ticket-status ticket-status--waiting" id="home-ticket-status">WAITING</span>
+                </div>
+                <div class="mini-ticket-meta">
+                  <span>Position: <strong id="home-ticket-position">5</strong></span>
+                  <span>Est. wait: <strong id="home-ticket-wait">~50 min</strong></span>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+
+          <!-- B. JOIN A QUEUE -->
+          <section
+            id="section-student-join-queue"
+            class="dashboard-section section--hidden"
+            aria-labelledby="join-queue-heading"
+          >
+            <div class="section-header">
+              <h3 id="join-queue-heading">Join a Queue</h3>
+              <p class="section-subtitle">Select a university service office to request your queue ticket.</p>
+            </div>
+
+            <div class="office-cards-grid" id="student-office-grid" role="list">
+
+              <article class="office-card" role="listitem" data-office-id="OFF-001">
+                <div class="office-card-icon" aria-hidden="true">&#128196;</div>
+                <div class="office-card-body">
+                  <h4 class="office-card-name">Registrar's Office</h4>
+                  <p class="office-card-desc">Enrollment, student records, certificates, and academic documents.</p>
+                  <dl class="office-card-meta">
+                    <dt>Hours</dt>
+                    <dd>8:00 AM – 5:00 PM, Mon–Fri</dd>
+                    <dt>Status</dt>
+                    <dd><span class="office-status office-status--open">Open</span></dd>
+                    <dt>Waiting</dt>
+                    <dd id="waiting-OFF-001">6 students</dd>
+                  </dl>
+                </div>
+                <button
+                  type="button"
+                  class="btn-join-queue-card btn-primary"
+                  data-office-id="OFF-001"
+                  data-office-name="Registrar's Office"
+                  aria-label="Join queue for Registrar's Office"
+                >
+                  Join Queue
+                </button>
+              </article>
+
+              <article class="office-card" role="listitem" data-office-id="OFF-002">
+                <div class="office-card-icon" aria-hidden="true">&#128181;</div>
+                <div class="office-card-body">
+                  <h4 class="office-card-name">Cashier's Office</h4>
+                  <p class="office-card-desc">Tuition payments, fees, and authorized financial transactions.</p>
+                  <dl class="office-card-meta">
+                    <dt>Hours</dt>
+                    <dd>8:00 AM – 4:00 PM, Mon–Fri</dd>
+                    <dt>Status</dt>
+                    <dd><span class="office-status office-status--open">Open</span></dd>
+                    <dt>Waiting</dt>
+                    <dd id="waiting-OFF-002">3 students</dd>
+                  </dl>
+                </div>
+                <button
+                  type="button"
+                  class="btn-join-queue-card btn-primary"
+                  data-office-id="OFF-002"
+                  data-office-name="Cashier's Office"
+                  aria-label="Join queue for Cashier's Office"
+                >
+                  Join Queue
+                </button>
+              </article>
+
+              <article class="office-card" role="listitem" data-office-id="OFF-003">
+                <div class="office-card-icon" aria-hidden="true">&#10010;</div>
+                <div class="office-card-body">
+                  <h4 class="office-card-name">University Clinic</h4>
+                  <p class="office-card-desc">Basic health services, medical certificates, and student health assistance.</p>
+                  <dl class="office-card-meta">
+                    <dt>Hours</dt>
+                    <dd>8:00 AM – 5:00 PM, Mon–Fri</dd>
+                    <dt>Status</dt>
+                    <dd><span class="office-status office-status--closed">Closed</span></dd>
+                    <dt>Waiting</dt>
+                    <dd id="waiting-OFF-003">0 students</dd>
+                  </dl>
+                </div>
+                <button
+                  type="button"
+                  class="btn-join-queue-card btn-primary"
+                  data-office-id="OFF-003"
+                  data-office-name="University Clinic"
+                  aria-label="Join queue for University Clinic"
+                  disabled
+                >
+                  Closed
+                </button>
+              </article>
+
+              <article class="office-card" role="listitem" data-office-id="OFF-004">
+                <div class="office-card-icon" aria-hidden="true">&#128187;</div>
+                <div class="office-card-body">
+                  <h4 class="office-card-name">Information Technology Office</h4>
+                  <p class="office-card-desc">IT support, student email accounts, and system access requests.</p>
+                  <dl class="office-card-meta">
+                    <dt>Hours</dt>
+                    <dd>8:00 AM – 5:00 PM, Mon–Fri</dd>
+                    <dt>Status</dt>
+                    <dd><span class="office-status office-status--open">Open</span></dd>
+                    <dt>Waiting</dt>
+                    <dd id="waiting-OFF-004">2 students</dd>
+                  </dl>
+                </div>
+                <button
+                  type="button"
+                  class="btn-join-queue-card btn-primary"
+                  data-office-id="OFF-004"
+                  data-office-name="Information Technology Office"
+                  aria-label="Join queue for Information Technology Office"
+                >
+                  Join Queue
+                </button>
+              </article>
+
+            </div>
+
+            <!-- Join Queue Confirmation Modal (hidden, shown by JS) -->
+            <div id="join-queue-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="modal-heading">
+              <div class="modal-card">
+                <h4 id="modal-heading" class="modal-title">Confirm Queue Request</h4>
+                <p class="modal-body">
+                  You are about to join the queue for
+                  <strong id="modal-office-name">Registrar's Office</strong>.
+                </p>
+                <div class="form-group">
+                  <label for="modal-service-type">Service Type or Purpose (Optional)</label>
+                  <input
+                    type="text"
+                    id="modal-service-type"
+                    name="serviceType"
+                    placeholder="e.g., Request Transcript of Records"
+                  />
+                </div>
+                <div class="form-group form-group--checkbox">
+                  <input
+                    type="checkbox"
+                    id="modal-acknowledge"
+                    name="acknowledge"
+                    required
+                  />
+                  <label for="modal-acknowledge">
+                    I understand that the estimated waiting time is approximate and may change.
+                  </label>
+                </div>
+                <div class="modal-actions">
+                  <button type="button" class="btn-primary" id="btn-confirm-join">
+                    Confirm and Join Queue
+                  </button>
+                  <button type="button" class="btn-secondary" id="btn-cancel-modal">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+
+          <!-- C. MY ACTIVE TICKET -->
+          <section
+            id="section-student-active-ticket"
+            class="dashboard-section section--hidden"
+            aria-labelledby="active-ticket-heading"
+          >
+            <div class="section-header">
+              <h3 id="active-ticket-heading">My Active Ticket</h3>
+              <p class="section-subtitle">Your current queue ticket and position.</p>
+            </div>
+
+            <!-- Empty state: shown when student has no active ticket -->
+            <div id="active-ticket-empty" class="empty-state">
+              <div class="empty-state-icon" aria-hidden="true">&#127914;</div>
+              <h4>No Active Ticket</h4>
+              <p>You do not have an active queue ticket at the moment.</p>
+              <button
+                type="button"
+                class="btn-primary"
+                data-target="section-student-join-queue"
+                data-screen="student"
+              >
+                Join a Queue
+              </button>
+            </div>
+
+            <!-- Active ticket card: shown when student has an active ticket -->
+            <div id="active-ticket-card" class="ticket-card" hidden>
+
+              <div class="ticket-card-header">
+                <div class="ticket-card-number" id="active-ticket-number">R-001</div>
+                <span class="ticket-status ticket-status--waiting" id="active-ticket-status">WAITING</span>
+              </div>
+
+              <dl class="ticket-details">
+                <dt>Office</dt>
+                <dd id="active-ticket-office">Registrar's Office</dd>
+
+                <dt>Service Type</dt>
+                <dd id="active-ticket-service">Request Transcript of Records</dd>
+
+                <dt>Date and Time Issued</dt>
+                <dd>
+                  <time id="active-ticket-issued" datetime="2026-11-15T08:30:00+08:00">
+                    November 15, 2026 at 8:30 AM
+                  </time>
+                </dd>
+
+                <dt>Queue Position</dt>
+                <dd id="active-ticket-position">Position 6 in queue</dd>
+
+                <dt>People Ahead</dt>
+                <dd id="active-ticket-ahead">5 people ahead</dd>
+
+                <dt>Estimated Waiting Time</dt>
+                <dd id="active-ticket-wait">Approximately 50 minutes</dd>
+
+                <dt>Now Serving</dt>
+                <dd id="active-ticket-serving">R-014</dd>
+              </dl>
+
+              <div class="ticket-card-actions">
+                <button
+                  type="button"
+                  class="btn-cancel-ticket"
+                  id="btn-cancel-active-ticket"
+                  aria-label="Cancel this queue ticket"
+                  aria-describedby="cancel-ticket-warning"
+                >
+                  Cancel This Ticket
+                </button>
+                <p id="cancel-ticket-warning" class="form-hint">
+                  Cancellation is only available for tickets with WAITING status.
+                </p>
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- D. QUEUE HISTORY -->
+          <section
+            id="section-student-history"
+            class="dashboard-section section--hidden"
+            aria-labelledby="student-history-heading"
+          >
+            <div class="section-header">
+              <h3 id="student-history-heading">Queue History</h3>
+              <p class="section-subtitle">Your past queue transactions.</p>
+            </div>
+
+            <div id="student-history-empty" class="empty-state" hidden>
+              <div class="empty-state-icon" aria-hidden="true">&#128203;</div>
+              <h4>No History Yet</h4>
+              <p>Your completed and cancelled queue tickets will appear here.</p>
+            </div>
+
+            <div class="table-container" role="region" aria-label="Queue history table" tabindex="0">
+              <table id="student-history-table">
+                <caption>Queue Transaction History</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Ticket No.</th>
+                    <th scope="col">Office</th>
+                    <th scope="col">Date Issued</th>
+                    <th scope="col">Date Completed / Cancelled</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="student-history-tbody">
+                  <tr>
+                    <td>R-005</td>
+                    <td>Registrar's Office</td>
+                    <td><time datetime="2026-11-10">Nov 10, 2026</time></td>
+                    <td><time datetime="2026-11-10">Nov 10, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--completed">COMPLETED</span></td>
+                  </tr>
+                  <tr>
+                    <td>C-012</td>
+                    <td>Cashier's Office</td>
+                    <td><time datetime="2026-11-08">Nov 8, 2026</time></td>
+                    <td><time datetime="2026-11-08">Nov 8, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--completed">COMPLETED</span></td>
+                  </tr>
+                  <tr>
+                    <td>R-022</td>
+                    <td>Registrar's Office</td>
+                    <td><time datetime="2026-11-05">Nov 5, 2026</time></td>
+                    <td><time datetime="2026-11-05">Nov 5, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--cancelled">CANCELLED</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </section>
+
+
+          <!-- E. NOTIFICATIONS -->
+          <section
+            id="section-student-notifications"
+            class="dashboard-section section--hidden"
+            aria-labelledby="student-notif-heading"
+          >
+            <div class="section-header">
+              <h3 id="student-notif-heading">Notifications</h3>
+              <div class="section-header-actions">
+                <button type="button" class="btn-text" id="btn-mark-all-read">Mark all as read</button>
+              </div>
+            </div>
+
+            <ul class="notification-list" id="student-notification-list" aria-label="Notifications">
+
+              <li class="notification-item notification-item--unread notification-item--alert">
+                <article aria-labelledby="notif-s-1-title">
+                  <div class="notification-item-header">
+                    <h4 id="notif-s-1-title" class="notification-title">Your Ticket Has Been Called</h4>
+                    <span class="unread-dot" aria-label="Unread"></span>
+                  </div>
+                  <p class="notification-body">
+                    Ticket R-001 at the Registrar's Office has been called.
+                    Please proceed to the counter immediately.
+                  </p>
+                  <time class="notification-time" datetime="2026-11-15T09:12:00+08:00">
+                    Nov 15, 2026 at 9:12 AM
+                  </time>
+                </article>
+              </li>
+
+              <li class="notification-item notification-item--unread notification-item--info">
+                <article aria-labelledby="notif-s-2-title">
+                  <div class="notification-item-header">
+                    <h4 id="notif-s-2-title" class="notification-title">Your Turn Is Approaching</h4>
+                    <span class="unread-dot" aria-label="Unread"></span>
+                  </div>
+                  <p class="notification-body">
+                    You are now 2nd in line at the Registrar's Office.
+                    Please prepare your documents.
+                  </p>
+                  <time class="notification-time" datetime="2026-11-15T09:00:00+08:00">
+                    Nov 15, 2026 at 9:00 AM
+                  </time>
+                </article>
+              </li>
+
+              <li class="notification-item notification-item--unread notification-item--success">
+                <article aria-labelledby="notif-s-3-title">
+                  <div class="notification-item-header">
+                    <h4 id="notif-s-3-title" class="notification-title">Successfully Joined a Queue</h4>
+                    <span class="unread-dot" aria-label="Unread"></span>
+                  </div>
+                  <p class="notification-body">
+                    You have successfully joined the queue at the Registrar's Office.
+                    Your ticket number is R-001.
+                  </p>
+                  <time class="notification-time" datetime="2026-11-15T08:31:00+08:00">
+                    Nov 15, 2026 at 8:31 AM
+                  </time>
+                </article>
+              </li>
+
+              <li class="notification-item notification-item--read notification-item--success">
+                <article aria-labelledby="notif-s-4-title">
+                  <div class="notification-item-header">
+                    <h4 id="notif-s-4-title" class="notification-title">Ticket Completed</h4>
+                  </div>
+                  <p class="notification-body">
+                    Your ticket C-012 at the Cashier's Office has been marked as completed.
+                  </p>
+                  <time class="notification-time" datetime="2026-11-08T10:45:00+08:00">
+                    Nov 8, 2026 at 10:45 AM
+                  </time>
+                </article>
+              </li>
+
+              <li class="notification-item notification-item--read notification-item--danger">
+                <article aria-labelledby="notif-s-5-title">
+                  <div class="notification-item-header">
+                    <h4 id="notif-s-5-title" class="notification-title">Ticket Cancelled</h4>
+                  </div>
+                  <p class="notification-body">
+                    Your ticket R-022 at the Registrar's Office has been cancelled.
+                  </p>
+                  <time class="notification-time" datetime="2026-11-05T14:00:00+08:00">
+                    Nov 5, 2026 at 2:00 PM
+                  </time>
+                </article>
+              </li>
+
+            </ul>
+
+          </section>
+
+
+          <!-- F. MY PROFILE -->
+          <section
+            id="section-student-profile"
+            class="dashboard-section section--hidden"
+            aria-labelledby="student-profile-heading"
+          >
+            <div class="section-header">
+              <h3 id="student-profile-heading">My Profile</h3>
+              <p class="section-subtitle">Your account information.</p>
+            </div>
+
+            <div class="profile-card">
+              <div class="profile-avatar" aria-hidden="true">S</div>
+              <div class="profile-info">
+
+                <dl class="profile-details">
+                  <dt>Student ID</dt>
+                  <dd id="profile-student-id">2024-00001</dd>
+
+                  <dt>Full Name</dt>
+                  <dd id="profile-full-name">Sample Student Name</dd>
+
+                  <dt>Email Address</dt>
+                  <dd id="profile-email">2024-00001@university.edu.ph</dd>
+
+                  <dt>Account Role</dt>
+                  <dd>
+                    <span class="role-badge role-badge--student">Student</span>
+                  </dd>
+
+                  <dt>Member Since</dt>
+                  <dd>Academic Year 2024–2025</dd>
+                </dl>
+
+                <div class="profile-actions">
+                  <button type="button" class="btn-secondary" id="btn-edit-profile">
+                    Edit Profile
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+        </main>
+      </div>
+
+    </div>
+
+
+    <!-- ================================================================
+         SCREEN 3: STAFF DASHBOARD
+         Hidden on load. Shown by JavaScript after staff login.
+    ================================================================ -->
+    <div id="screen-staff" class="screen screen--hidden" aria-label="Staff dashboard">
+
+      <aside id="sidebar-staff" class="sidebar" aria-label="Staff navigation">
+
+        <div class="sidebar-brand">
+          <div class="sidebar-logo" aria-hidden="true">QL</div>
+          <span class="sidebar-brand-name">QueueLess</span>
+        </div>
+
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar sidebar-user-avatar--staff" aria-hidden="true">S</div>
+          <div class="sidebar-user-info">
+            <span id="staff-display-name" class="sidebar-user-name">Staff Name</span>
+            <span class="sidebar-user-role">Staff</span>
+          </div>
+        </div>
+
+        <nav aria-label="Staff dashboard navigation">
+          <ul class="sidebar-nav">
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn sidebar-nav-btn--active"
+                data-target="section-staff-home"
+                data-screen="staff"
+                aria-current="page"
+              >
+                Dashboard
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-staff-manage-queue"
+                data-screen="staff"
+              >
+                Manage Queue
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-staff-history"
+                data-screen="staff"
+              >
+                Queue History
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-staff-office-info"
+                data-screen="staff"
+              >
+                Office Information
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button type="button" class="btn-logout" id="btn-logout-staff">
+            Sign Out
+          </button>
+        </div>
+
+      </aside>
+
+      <div class="dashboard-body">
+
+        <header class="dashboard-header" id="staff-dashboard-header">
+          <div class="dashboard-header-left">
+            <button
+              type="button"
+              id="btn-toggle-sidebar-staff"
+              class="btn-sidebar-toggle"
+              aria-label="Toggle sidebar navigation"
+              aria-controls="sidebar-staff"
+            >
+              &#9776;
+            </button>
+            <h2 class="dashboard-section-title" id="staff-section-title">Dashboard</h2>
+          </div>
+          <div class="dashboard-header-right">
+            <span class="header-office-name" id="staff-header-office">Registrar's Office</span>
+          </div>
+        </header>
+
+        <main id="staff-main" class="dashboard-main">
+
+          <!-- A. STAFF HOME / DASHBOARD -->
+          <section
+            id="section-staff-home"
+            class="dashboard-section section--active"
+            aria-labelledby="staff-home-heading"
+          >
+            <div class="section-header">
+              <h3 id="staff-home-heading">
+                Welcome, <span id="staff-welcome-name">Staff</span>
+              </h3>
+              <p class="section-subtitle">
+                Managing: <strong id="staff-welcome-office">Registrar's Office</strong>
+              </p>
+            </div>
+
+            <div class="overview-cards" role="list">
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Waiting</div>
+                <div class="overview-card-value" id="staff-stat-waiting">6</div>
+                <div class="overview-card-sub">tickets in queue</div>
+              </article>
+              <article class="overview-card overview-card--highlight" role="listitem">
+                <div class="overview-card-label">Now Serving</div>
+                <div class="overview-card-value" id="staff-stat-serving">R-014</div>
+                <div class="overview-card-sub">currently called</div>
+              </article>
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Completed Today</div>
+                <div class="overview-card-value" id="staff-stat-completed">13</div>
+                <div class="overview-card-sub">tickets served</div>
+              </article>
+            </div>
+
+            <div class="staff-quick-controls">
+              <h4>Queue Controls</h4>
+              <div class="staff-control-buttons">
+                <button type="button" class="btn-primary" id="btn-staff-call-next-home">
+                  Call Next Ticket
+                </button>
+                <button type="button" class="btn-success" id="btn-staff-complete-home">
+                  Mark as Completed
+                </button>
+                <button type="button" class="btn-danger-outline" id="btn-staff-skip-home">
+                  Skip / Cancel
+                </button>
+              </div>
+            </div>
+
+          </section>
+
+
+          <!-- B. MANAGE QUEUE -->
+          <section
+            id="section-staff-manage-queue"
+            class="dashboard-section section--hidden"
+            aria-labelledby="manage-queue-heading"
+          >
+            <div class="section-header">
+              <h3 id="manage-queue-heading">Manage Queue</h3>
+              <p class="section-subtitle">View and manage the queue for your assigned office.</p>
+            </div>
+
+            <div class="staff-queue-controls">
+              <button type="button" class="btn-primary" id="btn-call-next">
+                Call Next Ticket
+              </button>
+              <button type="button" class="btn-success" id="btn-mark-completed">
+                Mark as Completed
+              </button>
+              <button type="button" class="btn-danger-outline" id="btn-skip-ticket">
+                Skip / Cancel Ticket
+              </button>
+            </div>
+
+            <div class="table-container" role="region" aria-label="Queue management table" tabindex="0">
+              <table id="staff-queue-table">
+                <caption>Current Queue — Registrar's Office</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Ticket No.</th>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Service Type</th>
+                    <th scope="col">Time Issued</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="staff-queue-tbody">
+                  <tr>
+                    <td>R-014</td>
+                    <td>2024-00088</td>
+                    <td>Diploma Verification</td>
+                    <td><time datetime="2026-11-15T07:45:00+08:00">7:45 AM</time></td>
+                    <td><span class="ticket-status ticket-status--called">CALLED</span></td>
+                    <td>
+                      <button type="button" class="btn-table-action btn-success-sm" data-action="complete" data-ticket="R-014">
+                        Complete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>R-015</td>
+                    <td>2024-00031</td>
+                    <td>Certificate of Enrollment</td>
+                    <td><time datetime="2026-11-15T07:55:00+08:00">7:55 AM</time></td>
+                    <td><span class="ticket-status ticket-status--waiting">WAITING</span></td>
+                    <td>
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="call" data-ticket="R-015">
+                        Call
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>R-016</td>
+                    <td>2024-00045</td>
+                    <td>Grade Request</td>
+                    <td><time datetime="2026-11-15T08:02:00+08:00">8:02 AM</time></td>
+                    <td><span class="ticket-status ticket-status--waiting">WAITING</span></td>
+                    <td>
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="call" data-ticket="R-016">
+                        Call
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>R-017</td>
+                    <td>2024-00012</td>
+                    <td>Document Authentication</td>
+                    <td><time datetime="2026-11-15T08:10:00+08:00">8:10 AM</time></td>
+                    <td><span class="ticket-status ticket-status--waiting">WAITING</span></td>
+                    <td>
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="call" data-ticket="R-017">
+                        Call
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </section>
+
+
+          <!-- C. STAFF QUEUE HISTORY -->
+          <section
+            id="section-staff-history"
+            class="dashboard-section section--hidden"
+            aria-labelledby="staff-history-heading"
+          >
+            <div class="section-header">
+              <h3 id="staff-history-heading">Queue History</h3>
+              <p class="section-subtitle">Completed and cancelled tickets for your office today.</p>
+            </div>
+
+            <div class="table-container" role="region" aria-label="Staff queue history table" tabindex="0">
+              <table id="staff-history-table">
+                <caption>Queue History — Registrar's Office</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Ticket No.</th>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Service Type</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="staff-history-tbody">
+                  <tr>
+                    <td>R-001</td>
+                    <td>2024-00009</td>
+                    <td>Transcript of Records</td>
+                    <td><time datetime="2026-11-15">Nov 15, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--completed">COMPLETED</span></td>
+                  </tr>
+                  <tr>
+                    <td>R-002</td>
+                    <td>2024-00017</td>
+                    <td>Certificate of Graduation</td>
+                    <td><time datetime="2026-11-15">Nov 15, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--completed">COMPLETED</span></td>
+                  </tr>
+                  <tr>
+                    <td>R-003</td>
+                    <td>2024-00055</td>
+                    <td>Enrollment Verification</td>
+                    <td><time datetime="2026-11-15">Nov 15, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--cancelled">CANCELLED</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </section>
+
+
+          <!-- D. OFFICE INFORMATION -->
+          <section
+            id="section-staff-office-info"
+            class="dashboard-section section--hidden"
+            aria-labelledby="office-info-heading"
+          >
+            <div class="section-header">
+              <h3 id="office-info-heading">Office Information</h3>
+              <p class="section-subtitle">Details about your assigned service office.</p>
+            </div>
+
+            <div class="office-info-card">
+              <dl class="office-info-details">
+                <dt>Office Name</dt>
+                <dd id="office-info-name">Registrar's Office</dd>
+
+                <dt>Description</dt>
+                <dd id="office-info-desc">
+                  Handles enrollment, student records, certificates,
+                  and all official academic documents.
+                </dd>
+
+                <dt>Operating Hours</dt>
+                <dd id="office-info-hours">Monday to Friday, 8:00 AM – 5:00 PM</dd>
+
+                <dt>Office Location</dt>
+                <dd id="office-info-location">Administration Building, Room 101</dd>
+
+                <dt>Average Service Duration</dt>
+                <dd id="office-info-avg">Approximately 10 minutes per transaction</dd>
+
+                <dt>Current Status</dt>
+                <dd>
+                  <span class="office-status office-status--open" id="office-info-status">Open</span>
+                </dd>
+              </dl>
+            </div>
+
+          </section>
+
+        </main>
+      </div>
+
+    </div>
+
+
+    <!-- ================================================================
+         SCREEN 4: ADMINISTRATOR DASHBOARD
+         Hidden on load. Shown by JavaScript after admin login.
+    ================================================================ -->
+    <div id="screen-admin" class="screen screen--hidden" aria-label="Administrator dashboard">
+
+      <aside id="sidebar-admin" class="sidebar" aria-label="Administrator navigation">
+
+        <div class="sidebar-brand">
+          <div class="sidebar-logo" aria-hidden="true">QL</div>
+          <span class="sidebar-brand-name">QueueLess</span>
+        </div>
+
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar sidebar-user-avatar--admin" aria-hidden="true">A</div>
+          <div class="sidebar-user-info">
+            <span id="admin-display-name" class="sidebar-user-name">Admin Name</span>
+            <span class="sidebar-user-role">Administrator</span>
+          </div>
+        </div>
+
+        <nav aria-label="Administrator dashboard navigation">
+          <ul class="sidebar-nav">
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn sidebar-nav-btn--active"
+                data-target="section-admin-home"
+                data-screen="admin"
+                aria-current="page"
+              >
+                Dashboard
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-admin-offices"
+                data-screen="admin"
+              >
+                Manage Offices
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-admin-users"
+                data-screen="admin"
+              >
+                Manage Users
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-admin-transactions"
+                data-screen="admin"
+              >
+                All Transactions
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="sidebar-nav-btn"
+                data-target="section-admin-reports"
+                data-screen="admin"
+              >
+                Reports
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button type="button" class="btn-logout" id="btn-logout-admin">
+            Sign Out
+          </button>
+        </div>
+
+      </aside>
+
+      <div class="dashboard-body">
+
+        <header class="dashboard-header" id="admin-dashboard-header">
+          <div class="dashboard-header-left">
+            <button
+              type="button"
+              id="btn-toggle-sidebar-admin"
+              class="btn-sidebar-toggle"
+              aria-label="Toggle sidebar navigation"
+              aria-controls="sidebar-admin"
+            >
+              &#9776;
+            </button>
+            <h2 class="dashboard-section-title" id="admin-section-title">Dashboard</h2>
+          </div>
+          <div class="dashboard-header-right">
+            <span class="role-badge role-badge--admin">Administrator</span>
+          </div>
+        </header>
+
+        <main id="admin-main" class="dashboard-main">
+
+          <!-- A. ADMIN HOME / DASHBOARD -->
+          <section
+            id="section-admin-home"
+            class="dashboard-section section--active"
+            aria-labelledby="admin-home-heading"
+          >
+            <div class="section-header">
+              <h3 id="admin-home-heading">System Overview</h3>
+              <p class="section-subtitle">QueueLess — Administrator Dashboard</p>
+            </div>
+
+            <div class="overview-cards" role="list">
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Registered Users</div>
+                <div class="overview-card-value" id="admin-stat-users">48</div>
+                <div class="overview-card-sub">students, staff, admins</div>
+              </article>
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Total Offices</div>
+                <div class="overview-card-value" id="admin-stat-offices">4</div>
+                <div class="overview-card-sub">service offices</div>
+              </article>
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Active Tickets</div>
+                <div class="overview-card-value" id="admin-stat-active">11</div>
+                <div class="overview-card-sub">currently in queues</div>
+              </article>
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Completed Today</div>
+                <div class="overview-card-value" id="admin-stat-completed">37</div>
+                <div class="overview-card-sub">total transactions</div>
+              </article>
+            </div>
+
+            <div class="admin-system-summary">
+              <h4>Office Queue Status</h4>
+              <div class="table-container" role="region" aria-label="Office queue status" tabindex="0">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Office</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Waiting</th>
+                      <th scope="col">Completed Today</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Registrar's Office</td>
+                      <td><span class="office-status office-status--open">Open</span></td>
+                      <td>6</td>
+                      <td>13</td>
+                    </tr>
+                    <tr>
+                      <td>Cashier's Office</td>
+                      <td><span class="office-status office-status--open">Open</span></td>
+                      <td>3</td>
+                      <td>18</td>
+                    </tr>
+                    <tr>
+                      <td>University Clinic</td>
+                      <td><span class="office-status office-status--closed">Closed</span></td>
+                      <td>0</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>IT Office</td>
+                      <td><span class="office-status office-status--open">Open</span></td>
+                      <td>2</td>
+                      <td>6</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </section>
+
+
+          <!-- B. MANAGE OFFICES -->
+          <section
+            id="section-admin-offices"
+            class="dashboard-section section--hidden"
+            aria-labelledby="admin-offices-heading"
+          >
+            <div class="section-header">
+              <h3 id="admin-offices-heading">Manage Offices</h3>
+              <div class="section-header-actions">
+                <button type="button" class="btn-primary" id="btn-add-office">
+                  + Add New Office
+                </button>
+              </div>
+            </div>
+
+            <!-- Add Office Form (hidden by default, shown by JS) -->
+            <div id="add-office-form-container" class="form-panel" hidden>
+              <h4>Add New Office</h4>
+              <form id="add-office-form" class="admin-form" novalidate>
+                <div class="form-group">
+                  <label for="new-office-name">Office Name <abbr title="required">*</abbr></label>
+                  <input type="text" id="new-office-name" name="officeName" required placeholder="e.g., Scholarship Office" />
+                </div>
+                <div class="form-group">
+                  <label for="new-office-desc">Description <abbr title="required">*</abbr></label>
+                  <input type="text" id="new-office-desc" name="officeDesc" required placeholder="Short description of services" />
+                </div>
+                <div class="form-group">
+                  <label for="new-office-hours">Operating Hours <abbr title="required">*</abbr></label>
+                  <input type="text" id="new-office-hours" name="officeHours" required placeholder="e.g., Mon–Fri, 8AM–5PM" />
+                </div>
+                <div class="form-group">
+                  <label for="new-office-avg">Avg. Service Duration (minutes) <abbr title="required">*</abbr></label>
+                  <input type="number" id="new-office-avg" name="avgDuration" min="1" required placeholder="e.g., 10" />
+                </div>
+                <div class="form-group">
+                  <label for="new-office-status">Initial Status <abbr title="required">*</abbr></label>
+                  <select id="new-office-status" name="officeStatus" required>
+                    <option value="">-- Select status --</option>
+                    <option value="OPEN">Open</option>
+                    <option value="CLOSED">Closed</option>
+                  </select>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary">Add Office</button>
+                  <button type="button" class="btn-secondary" id="btn-cancel-add-office">Cancel</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="table-container" role="region" aria-label="Offices management table" tabindex="0">
+              <table id="admin-offices-table">
+                <caption>Registered Service Offices</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Office ID</th>
+                    <th scope="col">Office Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Hours</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-offices-tbody">
+                  <tr>
+                    <td>OFF-001</td>
+                    <td>Registrar's Office</td>
+                    <td>Enrollment, records, certificates</td>
+                    <td>Mon–Fri, 8AM–5PM</td>
+                    <td><span class="office-status office-status--open">Open</span></td>
+                    <td class="table-actions">
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="edit-office" data-id="OFF-001">Edit</button>
+                      <button type="button" class="btn-table-action btn-danger-sm" data-action="delete-office" data-id="OFF-001">Delete</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>OFF-002</td>
+                    <td>Cashier's Office</td>
+                    <td>Tuition and fee payments</td>
+                    <td>Mon–Fri, 8AM–4PM</td>
+                    <td><span class="office-status office-status--open">Open</span></td>
+                    <td class="table-actions">
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="edit-office" data-id="OFF-002">Edit</button>
+                      <button type="button" class="btn-table-action btn-danger-sm" data-action="delete-office" data-id="OFF-002">Delete</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>OFF-003</td>
+                    <td>University Clinic</td>
+                    <td>Basic health and medical services</td>
+                    <td>Mon–Fri, 8AM–5PM</td>
+                    <td><span class="office-status office-status--closed">Closed</span></td>
+                    <td class="table-actions">
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="edit-office" data-id="OFF-003">Edit</button>
+                      <button type="button" class="btn-table-action btn-danger-sm" data-action="delete-office" data-id="OFF-003">Delete</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>OFF-004</td>
+                    <td>IT Office</td>
+                    <td>IT support and system access</td>
+                    <td>Mon–Fri, 8AM–5PM</td>
+                    <td><span class="office-status office-status--open">Open</span></td>
+                    <td class="table-actions">
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="edit-office" data-id="OFF-004">Edit</button>
+                      <button type="button" class="btn-table-action btn-danger-sm" data-action="delete-office" data-id="OFF-004">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </section>
+
+
+          <!-- C. MANAGE USERS -->
+          <section
+            id="section-admin-users"
+            class="dashboard-section section--hidden"
+            aria-labelledby="admin-users-heading"
+          >
+            <div class="section-header">
+              <h3 id="admin-users-heading">Manage Users</h3>
+              <div class="section-header-actions">
+                <button type="button" class="btn-primary" id="btn-add-user">
+                  + Add New User
+                </button>
+              </div>
+            </div>
+
+            <!-- Add User Form (hidden by default) -->
+            <div id="add-user-form-container" class="form-panel" hidden>
+              <h4>Add New User</h4>
+              <form id="add-user-form" class="admin-form" novalidate>
+                <div class="form-group">
+                  <label for="new-user-name">Full Name <abbr title="required">*</abbr></label>
+                  <input type="text" id="new-user-name" name="fullName" required placeholder="e.g., Juan Dela Cruz" />
+                </div>
+                <div class="form-group">
+                  <label for="new-user-id">User ID / Student ID <abbr title="required">*</abbr></label>
+                  <input type="text" id="new-user-id" name="userId" required placeholder="e.g., 2024-00099" />
+                </div>
+                <div class="form-group">
+                  <label for="new-user-email">Email Address <abbr title="required">*</abbr></label>
+                  <input type="email" id="new-user-email" name="email" required placeholder="e.g., user@university.edu.ph" />
+                </div>
+                <div class="form-group">
+                  <label for="new-user-role">Role <abbr title="required">*</abbr></label>
+                  <select id="new-user-role" name="role" required>
+                    <option value="">-- Select role --</option>
+                    <option value="STUDENT">Student</option>
+                    <option value="STAFF">Staff</option>
+                    <option value="ADMIN">Administrator</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="new-user-office">Assigned Office (Staff only)</label>
+                  <select id="new-user-office" name="assignedOffice">
+                    <option value="">-- None / N/A --</option>
+                    <option value="OFF-001">Registrar's Office</option>
+                    <option value="OFF-002">Cashier's Office</option>
+                    <option value="OFF-003">University Clinic</option>
+                    <option value="OFF-004">IT Office</option>
+                  </select>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary">Add User</button>
+                  <button type="button" class="btn-secondary" id="btn-cancel-add-user">Cancel</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="table-container" role="region" aria-label="User management table" tabindex="0">
+              <table id="admin-users-table">
+                <caption>Registered Users</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">User ID</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-users-tbody">
+                  <tr>
+                    <td>2024-00001</td>
+                    <td>Sample Student Name</td>
+                    <td>2024-00001@university.edu.ph</td>
+                    <td><span class="role-badge role-badge--student">Student</span></td>
+                    <td><span class="account-status account-status--active">Active</span></td>
+                    <td class="table-actions">
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="edit-user" data-id="2024-00001">Edit</button>
+                      <button type="button" class="btn-table-action btn-danger-sm" data-action="deactivate-user" data-id="2024-00001">Deactivate</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>STF-001</td>
+                    <td>Sample Staff Name</td>
+                    <td>staff01@university.edu.ph</td>
+                    <td><span class="role-badge role-badge--staff">Staff</span></td>
+                    <td><span class="account-status account-status--active">Active</span></td>
+                    <td class="table-actions">
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="edit-user" data-id="STF-001">Edit</button>
+                      <button type="button" class="btn-table-action btn-danger-sm" data-action="deactivate-user" data-id="STF-001">Deactivate</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>ADM-001</td>
+                    <td>Sample Admin Name</td>
+                    <td>admin01@university.edu.ph</td>
+                    <td><span class="role-badge role-badge--admin">Admin</span></td>
+                    <td><span class="account-status account-status--active">Active</span></td>
+                    <td class="table-actions">
+                      <button type="button" class="btn-table-action btn-primary-sm" data-action="edit-user" data-id="ADM-001">Edit</button>
+                      <button type="button" class="btn-table-action btn-danger-sm" data-action="deactivate-user" data-id="ADM-001">Deactivate</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </section>
+
+
+          <!-- D. ALL QUEUE TRANSACTIONS -->
+          <section
+            id="section-admin-transactions"
+            class="dashboard-section section--hidden"
+            aria-labelledby="admin-transactions-heading"
+          >
+            <div class="section-header">
+              <h3 id="admin-transactions-heading">All Queue Transactions</h3>
+              <p class="section-subtitle">System-wide queue activity across all offices.</p>
+            </div>
+
+            <div class="table-container" role="region" aria-label="All transactions table" tabindex="0">
+              <table id="admin-transactions-table">
+                <caption>All Queue Transactions</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Ticket No.</th>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Office</th>
+                    <th scope="col">Service Type</th>
+                    <th scope="col">Date Issued</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-transactions-tbody">
+                  <tr>
+                    <td>R-014</td>
+                    <td>2024-00088</td>
+                    <td>Registrar's Office</td>
+                    <td>Diploma Verification</td>
+                    <td><time datetime="2026-11-15">Nov 15, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--called">CALLED</span></td>
+                  </tr>
+                  <tr>
+                    <td>C-005</td>
+                    <td>2024-00031</td>
+                    <td>Cashier's Office</td>
+                    <td>Tuition Payment</td>
+                    <td><time datetime="2026-11-15">Nov 15, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--completed">COMPLETED</span></td>
+                  </tr>
+                  <tr>
+                    <td>I-002</td>
+                    <td>2024-00045</td>
+                    <td>IT Office</td>
+                    <td>Email Account Setup</td>
+                    <td><time datetime="2026-11-15">Nov 15, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--waiting">WAITING</span></td>
+                  </tr>
+                  <tr>
+                    <td>R-003</td>
+                    <td>2024-00055</td>
+                    <td>Registrar's Office</td>
+                    <td>Enrollment Verification</td>
+                    <td><time datetime="2026-11-15">Nov 15, 2026</time></td>
+                    <td><span class="ticket-status ticket-status--cancelled">CANCELLED</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </section>
+
+
+          <!-- E. REPORTS -->
+          <section
+            id="section-admin-reports"
+            class="dashboard-section section--hidden"
+            aria-labelledby="admin-reports-heading"
+          >
+            <div class="section-header">
+              <h3 id="admin-reports-heading">Reports</h3>
+              <p class="section-subtitle">System-wide queue statistics and summaries.</p>
+            </div>
+
+            <div class="overview-cards" role="list">
+              <article class="overview-card" role="listitem">
+                <div class="overview-card-label">Total Issued</div>
+                <div class="overview-card-value" id="report-stat-total">54</div>
+                <div class="overview-card-sub">tickets today</div>
+              </article>
+              <article class="overview-card overview-card--success" role="listitem">
+                <div class="overview-card-label">Completed</div>
+                <div class="overview-card-value" id="report-stat-completed">37</div>
+                <div class="overview-card-sub">successfully served</div>
+              </article>
+              <article class="overview-card overview-card--danger" role="listitem">
+                <div class="overview-card-label">Cancelled</div>
+                <div class="overview-card-value" id="report-stat-cancelled">6</div>
+                <div class="overview-card-sub">total cancellations</div>
+              </article>
+              <article class="overview-card overview-card--highlight" role="listitem">
+                <div class="overview-card-label">Most Used Office</div>
+                <div class="overview-card-value report-top-office" id="report-top-office">Cashier</div>
+                <div class="overview-card-sub">highest queue today</div>
+              </article>
+            </div>
+
+            <div class="report-charts">
+              <h4>Queue Activity per Office</h4>
+              <p class="section-subtitle">
+                Chart visualization will be integrated in a future update.
+                The table below shows raw data ready for charting.
+              </p>
+
+              <div class="table-container" role="region" aria-label="Queue activity per office" tabindex="0">
+                <table id="report-activity-table">
+                  <caption>Queue Activity per Office — Today</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Office</th>
+                      <th scope="col">Issued</th>
+                      <th scope="col">Completed</th>
+                      <th scope="col">Cancelled</th>
+                      <th scope="col">Waiting</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Registrar's Office</td>
+                      <td>22</td>
+                      <td>13</td>
+                      <td>3</td>
+                      <td>6</td>
+                    </tr>
+                    <tr>
+                      <td>Cashier's Office</td>
+                      <td>24</td>
+                      <td>18</td>
+                      <td>3</td>
+                      <td>3</td>
+                    </tr>
+                    <tr>
+                      <td>University Clinic</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>IT Office</td>
+                      <td>8</td>
+                      <td>6</td>
+                      <td>0</td>
+                      <td>2</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Chart placeholder: JavaScript will render a chart here -->
+              <div
+                id="chart-placeholder"
+                class="chart-placeholder"
+                role="img"
+                aria-label="Queue activity chart placeholder — to be implemented"
+              >
+                <p>Queue activity chart will appear here.</p>
+              </div>
+
+            </div>
+
+          </section>
+
+        </main>
+      </div>
+
+    </div>
+
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
