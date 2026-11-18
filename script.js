@@ -277,8 +277,24 @@ function showScreen(screenId) {
     }
   });
 
-  // Close any mobile sidebars
+  // Close any mobile sidebars and overlay when switching screens
   document.querySelectorAll('.sidebar').forEach(s => s.classList.remove('sidebar--open'));
+  setSidebarOverlay(false);
+}
+
+// Show or hide the mobile sidebar backdrop overlay
+function setSidebarOverlay(show) {
+  const overlay = document.getElementById('sidebar-overlay');
+  if (!overlay) return;
+  if (show) {
+    overlay.hidden = false;
+    // Force reflow so the CSS animation triggers
+    overlay.offsetHeight; // eslint-disable-line no-unused-expressions
+    overlay.classList.add('overlay--active');
+  } else {
+    overlay.classList.remove('overlay--active');
+    overlay.hidden = true;
+  }
 }
 
 function navigateToSection(role, targetSectionId) {
@@ -286,23 +302,20 @@ function navigateToSection(role, targetSectionId) {
   const mainEl = document.getElementById(mainId);
   if (!mainEl) return;
 
-  // Toggle active class on all sections under this role's main
+  // Show only the target section
   const sections = mainEl.querySelectorAll('.dashboard-section');
-  let selectedTitle = 'Dashboard';
-
   sections.forEach(sec => {
     if (sec.id === targetSectionId) {
       sec.classList.remove('section--hidden');
       sec.classList.add('section--active');
-      const h3 = sec.querySelector('.section-header h3');
-      if (h3) selectedTitle = h3.textContent.trim();
     } else {
       sec.classList.remove('section--active');
       sec.classList.add('section--hidden');
     }
   });
 
-  // Update sidebar button active state
+  // Update sidebar active state and read the button's label for the header title
+  let selectedTitle = 'Dashboard';
   const sidebarNav = document.getElementById(`sidebar-${role}`);
   if (sidebarNav) {
     const buttons = sidebarNav.querySelectorAll('.sidebar-nav-btn');
@@ -310,7 +323,13 @@ function navigateToSection(role, targetSectionId) {
       if (btn.dataset.target === targetSectionId) {
         btn.classList.add('sidebar-nav-btn--active');
         btn.setAttribute('aria-current', 'page');
-        selectedTitle = btn.textContent.replace(/\s+/g, ' ').trim();
+        // Read only the button's direct text (strip whitespace), ignore child elements (badges)
+        const rawText = Array.from(btn.childNodes)
+          .filter(n => n.nodeType === Node.TEXT_NODE)
+          .map(n => n.textContent.trim())
+          .filter(t => t.length > 0)
+          .join(' ');
+        if (rawText) selectedTitle = rawText;
       } else {
         btn.classList.remove('sidebar-nav-btn--active');
         btn.removeAttribute('aria-current');
@@ -318,16 +337,13 @@ function navigateToSection(role, targetSectionId) {
     });
   }
 
-  // Update top header title
+  // Update top header title (always replace, never append)
   const titleEl = document.getElementById(`${role}-section-title`);
-  if (titleEl) {
-    titleEl.textContent = selectedTitle;
-  }
+  if (titleEl) titleEl.textContent = selectedTitle;
 
-  // Close mobile sidebar if open
-  if (sidebarNav) {
-    sidebarNav.classList.remove('sidebar--open');
-  }
+  // Close mobile sidebar and overlay
+  if (sidebarNav) sidebarNav.classList.remove('sidebar--open');
+  setSidebarOverlay(false);
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1354,16 +1370,26 @@ function initEventListeners() {
     }
   });
 
-  // Mobile sidebar toggles
+  // Mobile sidebar toggles with overlay backdrop
   ['student', 'staff', 'admin'].forEach(role => {
     const toggleBtn = document.getElementById(`btn-toggle-sidebar-${role}`);
     const sidebar = document.getElementById(`sidebar-${role}`);
     if (toggleBtn && sidebar) {
       toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('sidebar--open');
+        const isOpen = sidebar.classList.toggle('sidebar--open');
+        setSidebarOverlay(isOpen);
       });
     }
   });
+
+  // Clicking the overlay closes the sidebar
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar').forEach(s => s.classList.remove('sidebar--open'));
+      setSidebarOverlay(false);
+    });
+  }
 
   // Join Queue Modal actions
   const confirmJoinBtn = document.getElementById('btn-confirm-join');
