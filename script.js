@@ -1,7 +1,5 @@
-// ==========================================================================
 // QueueLess — Student Queue Management System
-// script.js: Client-side Navigation, Authentication & Queue Management Logic
-// ==========================================================================
+// Client-side Navigation, Authentication & Queue Management Logic
 
 // --------------------------------------------------------------------------
 // 1. CONSTANTS & LOCAL STORAGE KEYS
